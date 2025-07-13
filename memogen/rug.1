@@ -1,0 +1,20 @@
+.TH RUG 1 "July 2025" "1.0" "Random Username Generator"
+.SH NAME
+rug \- generate random usernames
+.SH SYNOPSIS
+.B rug
+[\-?\-refresh]
+.SH DESCRIPTION
+rug prints a single username in the form
+adjective + noun + three-digit number.
+.CP
+Cached word lists are stored in ~/.adjustwords/wordbank.json.
+.SH OPTIONS
+.TP
+\-\-refresh
+force update of the cached word lists
+.SH EXAMPLES
+.B rug
+prints a new username
+.SH AUTHOR
+Michael Blake <zakureth@gmail.com>
