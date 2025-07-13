@@ -1,0 +1,26 @@
+.TH RPG 1 "July 2025" "1.0" "Random Password Generator"
+.SH NAME
+rpg \- generate random password variants
+.SH SYNOPSIS
+.B rpg
+[\-?\-refresh] [\-\-no-adverb]
+.SH DESCRIPTION
+rpg generates memorable passwords using verb-adverb-noun combos.
+It supports multiple output styles to satisfy different site rules.
+.CP
+Cached word lists are stored in ~/.adjustwords/wordbank.json.
+.SH OPTIONS
+.TP
+\-\-refresh
+force update of the cached word lists
+.TP
+\-\-no-adverb
+omit the adverb in password combos
+.SH EXAMPLES
+.B rpg
+prints basic variants
+.PP
+.B rpg --refresh
+rebuilds cache before generating
+.SH AUTHOR
+Michael Blake <zakureth@gmail.com>
