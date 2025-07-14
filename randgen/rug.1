@@ -1,0 +1,28 @@
+.TH RUG 1 "July 2025" "randgen 1.0" "Username Generator"
+.SH NAME
+rug \- generate a readable username using adjective, noun, and numeric suffix
+.SH SYNOPSIS
+.B rug
+.SH DESCRIPTION
+Invokes the \fBrandgen.py\fR script in username mode. Constructs usernames such as:
+.IP
+\fBfuzzyotter023\fR
+.PP
+Combines a random adjective and noun followed by a zero-padded number between 001 and 9999.
+Output is limited to 15 characters for compatibility with legacy systems.
+.SH FILES
+/usr/share/randgen/adjectives.txt
+.br
+/usr/share/randgen/nouns.txt
+.SH SEE ALSO
+rpg(1)
+.SH AUTHOR
+Written by the randgen development team. Contributions and feedback welcome via the project repository.
+.SH BUGS
+Known limitations include:
+.IP •
+No uniqueness checks against existing usernames
+.IP •
+Fixed wordlist path; must be manually edited for custom setups
+.PP
+Report bugs or issues via GitHub: https://github.com/Zakureth/dogbearpig/issues

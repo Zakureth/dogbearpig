@@ -14,7 +14,7 @@ except LookupError:
 
 # ─── Configuration ─────────────────────────────────────────────────────────────
 DICT_PATH  = "/usr/share/dict/words"
-TARGET_DIR = "/usr/share/memogen"
+TARGET_DIR = "/usr/share/randgen"
 MAX_LENGTH = 7
 MAX_WORDS  = 1000
 

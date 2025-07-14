@@ -1,0 +1,31 @@
+.TH RPG 1 "July 2025" "randgen 1.0" "Password Generator"
+.SH NAME
+rpg \- generate a memorable password using adverb, verb, and optional noun
+.SH SYNOPSIS
+.B rpg
+.SH DESCRIPTION
+Invokes the \fBrandgen.py\fR script in password mode. Constructs passwords such as:
+.IP
+\fBDaring-Dodge-42\fR
+.PP
+Combines a random adverb, verb, and optional noun followed by a numeric suffix. 
+If the generated combo is shorter than 12 characters, a noun is added for padding.
+Maximum output length is capped at 15 characters.
+.SH FILES
+/usr/share/randgen/adverbs.txt
+.br
+/usr/share/randgen/verbs.txt
+.br
+/usr/share/randgen/nouns.txt
+.SH SEE ALSO
+rug(1)
+.SH AUTHOR
+Written by the randgen development team. Contributions and feedback welcome via the project repository.
+.SH BUGS
+Known limitations include:
+.IP •
+Password entropy depends heavily on wordlist variety
+.IP •
+Fixed wordlist path; customization requires manual modification
+.PP
+Report bugs or suggestions at: https://github.com/Zakureth/dogbearpig/issues

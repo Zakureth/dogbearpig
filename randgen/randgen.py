@@ -6,7 +6,7 @@ import argparse
 import sys
 
 # ─── Configuration ─────────────────────────────────────────────────────────────
-WORD_DIR     = "/usr/share/memogen"
+WORD_DIR     = "/usr/share/randgen"
 MAX_OUTLEN   = 15
 PAD_THRESHOLD = 12
 
