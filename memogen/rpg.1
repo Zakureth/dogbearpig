@@ -1,27 +1,20 @@
-.TH RPG 1 "July 2025" "1.0" "Random Password Generator"
+.TH RPG 1 "July 2025" "memogen 1.0" "Password Generator"
 .SH NAME
-rpg \- generate random password variants
+rpg \- generate a memorable password using adverb, verb, and optional noun
 .SH SYNOPSIS
 .B rpg
-[\-?\-refresh] [\-\-no-adverb]
 .SH DESCRIPTION
-rpg generates memorable passwords using verb-adverb-noun combos.
-It supports multiple output styles to satisfy different site rules.
-.CP
-Cached word lists are stored in ~/.adjustwords/wordbank.json.
-.SH OPTIONS
-.TP
-\-\-refresh
-force update of the cached word lists
-.TP
-\-\-no-adverb
-omit the adverb in password combos
-.SH EXAMPLES
-.B rpg
-prints basic variants
+Invokes the \fBmemogen.py\fR script in password mode. Constructs readable passwords such as:
+.IP
+\fBDaring-Dodge-57\fR
 .PP
-.B rpg --refresh
-rebuilds cache before generating
-.SH AUTHOR
-Michael Blake <zakureth@gmail.com>
-
+Combines random adverb, verb, and optionally noun with a numeric suffix.
+Maximum output length is 15 characters.
+.SH FILES
+/usr/share/memogen/adverbs.txt
+.br
+/usr/share/memogen/verbs.txt
+.br
+/usr/share/memogen/nouns.txt
+.SH SEE ALSO
+rug(1)
