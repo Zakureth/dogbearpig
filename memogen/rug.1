@@ -1,21 +1,18 @@
-.TH RUG 1 "July 2025" "1.0" "Random Username Generator"
+.TH RUG 1 "July 2025" "memogen 1.0" "Username Generator"
 .SH NAME
-rug \- generate random usernames
+rug \- generate a readable username using adjective, noun, and numeric suffix
 .SH SYNOPSIS
 .B rug
-[\-?\-refresh]
 .SH DESCRIPTION
-rug prints a single username in the form
-adjective + noun + three-digit number.
-.CP
-Cached word lists are stored in ~/.adjustwords/wordbank.json.
-.SH OPTIONS
-.TP
-\-\-refresh
-force update of the cached word lists
-.SH EXAMPLES
-.B rug
-prints a new username
-.SH AUTHOR
-Michael Blake <zakureth@gmail.com>
-
+Invokes the \fBmemogen.py\fR script in username mode. Constructs usernames such as:
+.IP
+\fBfuzzyotter023\fR
+.PP
+Combines a random adjective and noun followed by a zero-padded number between 001 and 9999.
+Output is limited to 15 characters for compatibility with legacy systems.
+.SH FILES
+/usr/share/memogen/adjectives.txt
+.br
+/usr/share/memogen/nouns.txt
+.SH SEE ALSO
+rpg(1)
