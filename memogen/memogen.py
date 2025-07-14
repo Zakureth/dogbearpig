@@ -1,100 +1,79 @@
 #!/usr/bin/env python3
 
 import os
-import json
 import random
-import requests
 import argparse
 import sys
 
 # ─── Configuration ─────────────────────────────────────────────────────────────
-CACHE_DIR   = os.path.expanduser("~/.adjustwords")
-CACHE_FILE  = os.path.join(CACHE_DIR, "wordbank.json")
-DATAMUSE_API= "https://api.datamuse.com/words?md=p&max=1000"
+WORD_DIR     = "/usr/share/memogen"
+MAX_OUTLEN   = 15
+PAD_THRESHOLD = 12
 
 # ─── CLI Setup ─────────────────────────────────────────────────────────────────
 parser = argparse.ArgumentParser(
-    description="Multi‐mode generator: ‘rpg’ for passwords, ‘rug’ for usernames."
-)
-parser.add_argument(
-    "--refresh", action="store_true",
-    help="Force refresh of the cached word lists"
-)
-parser.add_argument(
-    "--no-adverb", action="store_true",
-    help="(rpg only) omit adverb in password combos"
+    description="Multi-mode generator: ‘rpg’ for passwords, ‘rug’ for usernames."
 )
 args = parser.parse_args()
 
-# ─── Cache Utilities ────────────────────────────────────────────────────────────
-def ensure_cache_dir():
-    os.makedirs(CACHE_DIR, exist_ok=True)
-
-def fetch_words(pos_tag):
+# ─── Load Words ────────────────────────────────────────────────────────────────
+def load_wordlist(filename):
+    path = os.path.join(WORD_DIR, filename)
     try:
-        resp = requests.get(DATAMUSE_API)
-        data = resp.json()
-        return [w["word"] for w in data if pos_tag in w.get("tags", [])]
-    except Exception:
+        with open(path, "r") as f:
+            return [line.strip().lower() for line in f if line.strip()]
+    except FileNotFoundError:
+        print(f"⚠️ Missing wordlist: {path}", file=sys.stderr)
         return []
 
-def build_wordbank():
-    ensure_cache_dir()
-    vb = sorted(set(fetch_words("v")))
-    adv = sorted(set(fetch_words("adv")))
-    aj  = sorted(set(fetch_words("adj")))
-    nn  = sorted(set(fetch_words("n")))
-    wb = {"verbs": vb, "adverbs": adv, "adjectives": aj, "nouns": nn}
-    with open(CACHE_FILE, "w") as f:
-        json.dump(wb, f)
-    return wb
-
-def load_wordbank(force=False):
-    if force or not os.path.exists(CACHE_FILE):
-        return build_wordbank()
-    with open(CACHE_FILE, "r") as f:
-        return json.load(f)
-
-# ─── Generation Routines ───────────────────────────────────────────────────────
-def generate_password_variants(bank, use_adverb=True):
-    verb   = random.choice(bank["verbs"]).capitalize()
-    noun   = random.choice(bank["nouns"]).capitalize()
-    adverb = random.choice(bank["adverbs"]).capitalize() if use_adverb else ""
-    symbol = random.choice(["$", "#", "!", "=", "_", "-"])
-    number = str(random.randint(0, 99))
-    core   = f"{verb}{adverb}{noun}"
-
+def load_wordbank():
     return {
-        "basic":      core,
-        "withNumber": f"{core}{number}",
-        "withSymbol": f"{core}{symbol}",
-        "wrapped":    f"{symbol}{core}{symbol}{number}",
-        "hyphenated": f"{verb}-{adverb}-{noun}-{number}" if use_adverb
-                      else f"{verb}-{noun}-{number}",
-        "underscore": f"{verb}_{adverb}_{noun}_{number}" if use_adverb
-                      else f"{verb}_{noun}_{number}",
-        "obfuscated": f"{verb[0].lower()}_{noun.upper()}_{number}{symbol}",
+        "verbs": load_wordlist("verbs.txt"),
+        "adverbs": load_wordlist("adverbs.txt"),
+        "adjectives": load_wordlist("adjectives.txt"),
+        "nouns": load_wordlist("nouns.txt"),
     }
 
+# ─── Password Generator ────────────────────────────────────────────────────────
+def generate_password(bank):
+    for _ in range(100):
+        adv = random.choice(bank["adverbs"]).capitalize()
+        vb  = random.choice(bank["verbs"]).capitalize()
+        nn  = random.choice(bank["nouns"]).capitalize()
+        num = str(random.randint(0, 99))
+
+        short = f"{adv}-{vb}-{num}"
+        if len(short) < PAD_THRESHOLD:
+            long = f"{adv}-{vb}-{nn}-{num}"
+            if len(long) <= MAX_OUTLEN:
+                return {"combo": long}
+        if len(short) <= MAX_OUTLEN:
+            return {"combo": short}
+
+    return {"combo": "Soft-Jump-42"}  # fallback
+
+
+# ─── Username Generator ────────────────────────────────────────────────────────
 def generate_username(bank):
-    adj    = random.choice(bank["adjectives"]).capitalize()
-    noun   = random.choice(bank["nouns"]).capitalize()
-    number = str(random.randint(1, 9999)).zfill(3)
-    return f"{adj}{noun}{number}"
+    for _ in range(100):
+        adj = random.choice(bank["adjectives"])
+        nn  = random.choice(bank["nouns"])
+        num = str(random.randint(1, 9999)).zfill(3)
+        uname = f"{adj}{nn}{num}"
+        if len(uname) <= MAX_OUTLEN:
+            return uname
+    return f"{adj[:3]}{nn[:3]}{num}"
 
 # ─── Dispatcher ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     mode = os.path.basename(sys.argv[0])
-    wb   = load_wordbank(force=args.refresh)
+    bank = load_wordbank()
 
     if mode == "rpg":
-        variants = generate_password_variants(wb, use_adverb=not args.no_adverb)
-        for name, pwd in variants.items():
-            print(f"{name}: {pwd}")
-
+        print(f"combo: {generate_password(bank)['combo']}")
     elif mode == "rug":
-        print(generate_username(wb))
-
+        print(generate_username(bank))
     else:
         print("Invoke this script as either “rpg” or “rug”.", file=sys.stderr)
         sys.exit(1)
+
